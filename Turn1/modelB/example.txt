@@ -1,3 +1,0 @@
-This is a sample text file.
-It contains multiple lines of text for testing purposes.
-Feel free to modify its content for your use case.
