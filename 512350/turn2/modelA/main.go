@@ -8,7 +8,6 @@ import (
 )
 
 func main() {
-
 	if len(os.Args) != 2 {
 		fmt.Println("Usage: go run main.go <file_path>")
 		os.Exit(1)
@@ -20,12 +19,7 @@ func main() {
 		fmt.Println("Error:", err)
 		os.Exit(1)
 	}
-	fmt.Printf("File Path: %s\n", filePath)
-	fmt.Printf("File Size: %d bytes\n", metadata.Size)
-	fmt.Printf("File Type: %s\n", metadata.Type)
-	fmt.Printf("Modification Time: %s\n", metadata.ModTime)
-	fmt.Printf("File Permissions: %s\n", metadata.Permissions)
-	fmt.Printf("Is Hidden: %t\n", metadata.Hidden)
+	printMetadata(filePath, metadata)
 }
 
 func extractMetadata(filePath string) (*metadataExtractor.FileInfo, error) {
@@ -35,6 +29,13 @@ func extractMetadata(filePath string) (*metadataExtractor.FileInfo, error) {
 	}
 	defer file.Close()
 
-	metadata, err := metadataExtractor.GetFileInfo(file)
-	return metadata, err
+	return metadataExtractor.GetFileInfo(file)
+}
+
+func printMetadata(filePath string, metadata *metadataExtractor.FileInfo) {
+	fmt.Printf("File Path: %s\n", filePath)
+	fmt.Printf("File Size: %d bytes\n", metadata.Size)
+	fmt.Printf("File Type: %s\n", metadata.Type)
+	fmt.Printf("Modification Time: %s\n", metadata.ModTime)
+	fmt.Printf("Permissions: %s\n", metadata.Mode)
 }
