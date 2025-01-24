@@ -3,8 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
-
-	"github.com/shahrukhq/metadata-extractor/metadataExtractor"
+	"time"
 )
 
 func main() {
@@ -25,15 +24,30 @@ func main() {
 	fmt.Printf("File Type: %s\n", metadata.Type)
 	fmt.Printf("Modification Time: %s\n", metadata.ModTime)
 	fmt.Printf("Permissions: %s\n", metadata.Permissions)
-	fmt.Printf("Is Hidden: %t\n", metadata.IsHidden)
 }
 
-func extractMetadata(filePath string) (*metadataExtractor.FileInfo, error) {
-	file, err := os.Open(filePath)
+type FileInfo struct {
+	Size        int64
+	Type        string
+	ModTime     time.Time
+	Permissions os.FileMode
+}
+
+func extractMetadata(filePath string) (*FileInfo, error) {
+	info, err := os.Stat(filePath)
 	if err != nil {
 		return nil, err
 	}
-	defer file.Close()
 
-	return metadataExtractor.GetFileInfo(file)
+	fileType := "file"
+	if info.IsDir() {
+		fileType = "directory"
+	}
+
+	return &FileInfo{
+		Size:        info.Size(),
+		Type:        fileType,
+		ModTime:     info.ModTime(),
+		Permissions: info.Mode(),
+	}, nil
 }
